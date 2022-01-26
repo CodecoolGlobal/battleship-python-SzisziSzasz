@@ -62,13 +62,16 @@ def print_two_board(grid, board_a, board_b):
 
 #print board
 
-#input:
+#boats_details:
 
 def boats_deatils():
     boats = {1:3, 2:3}
     boats_size = list(boats.keys())
     return boats, boats_size
-    
+
+#boats_deatils
+
+#cordinate input + validation:
 
 def is_valid_coordinates(size):
     letters = [string.ascii_letters[i] for i in range(26, 26+grid)]
@@ -125,6 +128,9 @@ def is_there_contact(imp, board, grid):
     else:
         return False
 
+#comment input + validation
+
+#change 0-X:
 
 def boats_init(boats, boats_size, board):
     coordinates_list = []
@@ -146,8 +152,51 @@ def boats_init(boats, boats_size, board):
             coordinates_list.append(ship)
     return coordinates_list
 
-# def is_it_too_close(coordinates_list,board):
-#     for n in range(len(coordinates_list)):
+#change O-X
+# waiting screen 'Next player's placement phase' is displayed til pressing any button
+
+
+#input shoot:
+
+def is_valid_shoot():
+    letters = [string.ascii_letters[i] for i in range(26, 26+grid)]
+    imp = []
+    valid = False
+    while not valid:
+        imp = input(f'Try to shoot a boat, give me a coordinate (A-{string.ascii_letters[25+grid]})(1-{grid}))')
+        
+        if len(imp) == 2:
+            if imp[0].upper() in letters:
+                try:
+                    0 < int(imp[1]) <= grid
+                    valid = True
+                except ValueError:
+                    print("This didn't seem to be a valid coordinate.")
+            else:
+                print("This didn't seem to be a valid coordinate.")
+                pass
+        else:
+            print('Coordinate must be 2 characters long: letter of row and number of col.')
+    return imp
+
+def input_shoot(size):
+    imp = is_valid_shoot()
+    coordinate = (ord(imp[0].lower())-97, int(imp[1])-1)
+    return coordinate
+
+#input shoot
+
+#test shoot:
+
+# def test_shoot(board_a, imp):
+#     if 
+
+
+#test shoot
+
+#change after shoot:
+
+#change after shoot
         
 
 []
@@ -157,3 +206,4 @@ board_a = init_board(grid)
 # cordinates_list = (boats_init(boats,boats_size, board_a))
 # print(is_it_too_close(cordinates_list,board_a))
 print(boats_init(boats, boats_size, board_a))
+print(input_shoot(boats_size))
