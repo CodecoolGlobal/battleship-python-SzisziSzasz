@@ -66,40 +66,44 @@ def print_two_board(grid, board_a, board_b):
 
 def boats_deatils():
     boats = {1:3, 2:3}
-    boat_size = list(boats.keys())
-    return boats, boat_size
+    boats_size = list(boats.keys())
+    return boats, boats_size
     
 
-def is_valid_coordinates(letters):
+def is_valid_coordinates(size):
+    letters = [string.ascii_letters[i] for i in range(26, 26+grid)]
     imp = []
     valid = False
     while not valid:
-        imp = list(input(f'Please give a coordinate (A-{string.ascii_letters[25+grid]})(1-{grid})'))
-        if len(imp) == 2:
-            if imp[0].upper() in letters and 0 < int(imp[1]) <= grid:
-                valid = True
-            else:
-                print("This didn't seem to be a valid coordinate.")
-                pass
+        imp = input(f'Please give {size} coordinates (A-{string.ascii_letters[25+grid]})(1-{grid}) separated by a space: ').split(' ')
+        if len(imp) == size:
+            for i in range(len(imp)):
+                if len(imp[i]) == 2:
+                    if imp[i][0].upper() in letters and 0 < int(imp[i][1]) <= grid:
+                        valid = True
+                    else:
+                        print("This didn't seem to be a valid coordinate.")
+                        pass
+                else:
+                    print('Coordinate must be 2 characters long: letter of row and number of col.')
         else:
-            print('Coordinate must be 2 characters long: letter of row and number of col.')
+            print(f"You must give {size} coordinates.")
     return imp
 
 
-def boats_init(boats, boat_size, board):
+def boats_init(boats, boats_size, board):
     coordinates_list = []
-    print = f'This is a {boats}, you have to give {boat_size} coordinates'
-    letters = [string.ascii_letters[i] for i in range(26, 26+grid)]
+    
     for m in range(len(boats)):
         for n in range(boats[m+1]):
-            ship = []
-            for p in range(boat_size[m]):
-                imp = is_valid_coordinates(letters)
-                coordinate = (ord(imp[0].lower())-97, int(imp[1])-1)
-                ship.append(coordinate)
+            imp = is_valid_coordinates(boats_size[m])
+            ship = {}
+            for p in range(len(imp)):
+                coordinate = (ord(imp[p][0].lower())-97, int(imp[p][1])-1)
+                ship[f'{coordinate[0]},{coordinate[1]}'] = 'X'
                 board[coordinate[0]][coordinate[1]] = 'X'
                 print_one_board(grid, board)
-            coordinates_list.extend(ship)
+            coordinates_list.append(ship)
     return coordinates_list
 
 # def is_it_too_close(coordinates_list,board):
@@ -107,10 +111,9 @@ def boats_init(boats, boat_size, board):
         
 
 []
-boats, boat_size = (boats_deatils())
+boats, boats_size = (boats_deatils())
 board_a = init_board(grid)
 # boats_init(boats, boat_size, board_a)
-cordinates_list = (boats_init(boats,boat_size,board_a))
-print(is_it_too_close(cordinates_list,board_a))
-
-    
+# cordinates_list = (boats_init(boats,boats_size, board_a))
+# print(is_it_too_close(cordinates_list,board_a))
+print(boats_init(boats, boats_size, board_a))
