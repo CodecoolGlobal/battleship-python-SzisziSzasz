@@ -76,27 +76,67 @@ def is_valid_coordinates(size):
     valid = False
     while not valid:
         imp = input(f'Please give {size} coordinates (A-{string.ascii_letters[25+grid]})(1-{grid}) separated by a space: ').split(' ')
+        valids = []
         if len(imp) == size:
             for i in range(len(imp)):
                 if len(imp[i]) == 2:
-                    if imp[i][0].upper() in letters and 0 < int(imp[i][1]) <= grid:
-                        valid = True
+                    if imp[i][0].upper() in letters:
+                        try:
+                            0 < int(imp[i][1]) <= grid
+                            valids.append(True)
+                        except ValueError:
+                            print("This didn't seem to be a valid coordinate.")
+                            valids.append(False)
                     else:
                         print("This didn't seem to be a valid coordinate.")
+                        valids.append(False)
                         pass
                 else:
                     print('Coordinate must be 2 characters long: letter of row and number of col.')
+                    valids.append(False)
         else:
             print(f"You must give {size} coordinates.")
+            valids.append(False)
+        if False in valids:
+            valid = False
+        else:
+            valid = True
     return imp
+
+def is_there_contact(imp, board, grid):
+    neighbors = set()
+    for i in range(len(imp)):
+        for j in range(len(imp)):
+            coordinate = (ord(imp[j][0].lower())-97, int(imp[j][1])-1)
+            if coordinate[0] != 0:
+                upper = (coordinate[0]-1, coordinate[1])
+                neighbors.add(board[upper[0]][upper[1]])
+            if coordinate[0] != grid-1:
+                lower = (coordinate[0]+1, coordinate[1])
+                neighbors.add(board[lower[0]][lower[1]])
+            if coordinate[1] != 0:
+                left = (coordinate[0], coordinate[1]-1)
+                neighbors.add(board[left[0]][left[1]])
+            if coordinate[1] != grid-1:
+                right = (coordinate[0], coordinate[1]+1)
+                neighbors.add(board[right[0]][right[1]])
+    if 'X' in neighbors:
+        return True
+    else:
+        return False
 
 
 def boats_init(boats, boats_size, board):
     coordinates_list = []
-    
     for m in range(len(boats)):
         for n in range(boats[m+1]):
-            imp = is_valid_coordinates(boats_size[m])
+            imp = []
+            theres_contact = True
+            while theres_contact:
+                imp = is_valid_coordinates(boats_size[m])
+                theres_contact = is_there_contact(imp, board, grid)
+                if theres_contact:
+                    print("Boats can't contact by edge.")
             ship = {}
             for p in range(len(imp)):
                 coordinate = (ord(imp[p][0].lower())-97, int(imp[p][1])-1)
