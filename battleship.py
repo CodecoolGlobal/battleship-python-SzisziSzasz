@@ -256,7 +256,7 @@ if __name__ == '__main__':
         clear_terminal()
         won = False
         winner = ''
-        while turns > 0 or not won:
+        while turns > 0 and not won:
             print(f"{bcolors.FAIL}Turns left: {turns}{bcolors.ENDC}")
             print(f"Player 1's turn.")
             print_two_board(grid, board_a, board_b)
@@ -275,8 +275,6 @@ if __name__ == '__main__':
             mark_shoot_on_board(board_a, hit, coordinates_list_a)
             print_two_board(grid, board_a, board_b)
             won, winner = is_win(coordinates_list_a, '2')
-            if won:
-                break
             clear_terminal()
             turns += -1
         if won:
