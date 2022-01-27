@@ -297,7 +297,7 @@ def half_turn(turns, grid, board_a, board_b, hit, coordinates, player, won, winn
     return won, winner
 
 
-if __name__ == '__main__':
+def main():
     try:
         clear_terminal()
         grid = init_grid(grid)
@@ -334,3 +334,7 @@ if __name__ == '__main__':
             print_two_board(grid, board_a, board_b)
     except KeyboardInterrupt:
         print('Goodbye...')
+
+
+if __name__ == '__main__':
+    main()
