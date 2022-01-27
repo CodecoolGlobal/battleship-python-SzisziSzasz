@@ -1,7 +1,6 @@
 import string
 import os 
-# import msvcrt as m
-import os
+import msvcrt as m
 # implementing the Battleship game
 
 
@@ -19,9 +18,9 @@ def clear_terminal():
 
 
 def wait(message):
-    # print(message)
-    # m.getch()
-    os.system('read -s -n 1 -p "Press any key to continue with Player 2."')
+    print(message)
+    m.getch()
+    # os.system('read -s -n 1 -p "Press any key to continue with Player 2."')
 
 def init_grid(grid):
     valid = False
@@ -272,16 +271,31 @@ def mark_shoot_on_board(board, hit, coordinates_list):
 
 def feedback(shot):
     if shot == 'M':
-        print("You've missed!")
+        print(f"{bcolors.FAIL}You've missed!{bcolors.ENDC}")
     elif shot == 'H':
-        print("You've hit a ship!")
+        print(f"{bcolors.WARNING}You've hit a ship!{bcolors.ENDC}")
     elif shot == 'S':
-        print("You've sunk a ship!")
+        print(f"{bcolors.FAIL}You've sunk a ship!{bcolors.ENDC}")
 
 
 def is_win(coordinates_list, player):
     win = len(coordinates_list) == 0
     return win, player
+
+
+def half_turn(turns, grid, board_a, board_b, hit, coordinates, player, won, winner, board_to_mark):
+    print(f"{bcolors.FAIL}Turns left: {turns}{bcolors.ENDC}")
+    print(f"Player {player}'s turn.")
+    print_two_board(grid, board_a, board_b)
+    hit = input_shoot()
+    shot = mark_shoot_on_board(board_to_mark, hit, coordinates)
+    print_two_board(grid, board_a, board_b)
+    feedback(shot)
+    won, winner = is_win(coordinates, player)
+    input("Press Enter to continue...")
+    clear_terminal()
+    return won, winner
+
 
 if __name__ == '__main__':
     try:
@@ -307,33 +321,16 @@ if __name__ == '__main__':
         won = False
         winner = ''
         while turns > 0 and not won:
-            print(f"{bcolors.FAIL}Turns left: {turns}{bcolors.ENDC}")
-            print(f"Player 1's turn.")
-            print_two_board(grid, board_a, board_b)
-            hit = input_shoot()
-            shot = mark_shoot_on_board(board_b, hit, coordinates_list_b)
-            print_two_board(grid, board_a, board_b)
-            feedback(shot)
-            won, winner = is_win(coordinates_list_b, '1')
-            input("Press Enter to continue...")
+            hit = ''
+            won, winner = half_turn(turns, grid, board_a, board_b, hit, coordinates_list_b, 1, won, winner, board_b)
             if won:
                 break
-            clear_terminal()
-
-            print(f"{bcolors.FAIL}Turns left: {turns}{bcolors.ENDC}")
-            print(f"Player 2's turn.")
-            print_two_board(grid, board_a, board_b)
-            hit = input_shoot()
-            shot = mark_shoot_on_board(board_a, hit, coordinates_list_a)
-            print_two_board(grid, board_a, board_b)
-            feedback(shot)
-            won, winner = is_win(coordinates_list_a, '2')
-            input("Press Enter to continue...")
-            clear_terminal()
+            won, winner = half_turn(turns, grid, board_a, board_b, hit, coordinates_list_a, 2, won, winner, board_a)
             turns += -1
         if won:
             print(f'{bcolors.OKGREEN}Player {winner} wins!{bcolors.ENDC}')
         if turns == 0:
             print("No more turns, it's a draw! ")
+            print_two_board(grid, board_a, board_b)
     except KeyboardInterrupt:
         print('Goodbye...')
