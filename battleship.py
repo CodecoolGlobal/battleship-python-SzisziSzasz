@@ -1,7 +1,7 @@
 import string
 import os 
-import msvcrt as m
-# import os
+# import msvcrt as m
+import os
 # implementing the Battleship game
 
 
@@ -18,9 +18,10 @@ def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
-def wait():
-    m.getch()
-    # os.system('read -s -n 1 -p "Press any key to continue..."')
+def wait(message):
+    # print(message)
+    # m.getch()
+    os.system('read -s -n 1 -p "Press any key to continue with Player 2."')
 
 def init_grid(grid):
     valid = False
@@ -212,6 +213,8 @@ def is_there_contact(imp, board, grid):
             if coordinate[1] != grid-1:
                 right = (coordinate[0], coordinate[1]+1)
                 neighbors.add(board[right[0]][right[1]])
+            tile = (coordinate[0], coordinate[1])
+            neighbors.add(board[tile[0]][tile[1]])
     if 'X' in neighbors:
         return True
     else:
@@ -290,8 +293,8 @@ if __name__ == '__main__':
         print_one_board(grid, board_a)
         coordinates_list_a, board_a = init_boats(boats, boats_size, board_a)
         # waiting screen 'Next player's placement phase' is displayed til pressing any button
-        print("Next player's placement phase.\nPress Enter to continue with Player 2.")
-        wait()
+        print("Next player's placement phase.\n")
+        wait("Press any key to continue with Player 2.")
         clear_terminal()
         print(f"{bcolors.FAIL}Player 2's turn.{bcolors.ENDC}")
         board_b = init_board(grid)
