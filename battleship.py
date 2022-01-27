@@ -284,7 +284,7 @@ if __name__ == '__main__':
     try:
         clear_terminal()
         grid = init_grid(grid)
-        boats, boats_size = (boats_deatils())
+        boats, boats_size = (boats_deatils(grid))
         print(f"{bcolors.FAIL}Player 1's turn.{bcolors.ENDC}")
         board_a = init_board(grid)
         print_one_board(grid, board_a)
