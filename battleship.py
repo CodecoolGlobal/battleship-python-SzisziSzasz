@@ -1,7 +1,7 @@
 import string
 import os 
-import time
 import msvcrt as m
+# import os
 # implementing the Battleship game
 
 
@@ -20,6 +20,7 @@ def clear_terminal():
 
 def wait():
     m.getch()
+    # os.system('read -s -n 1 -p "Press any key to continue..."')
 
 def init_grid(grid):
     valid = False
