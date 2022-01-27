@@ -337,4 +337,4 @@ def main(grid):
 
 
 if __name__ == '__main__':
-    main()
+    main(grid)
