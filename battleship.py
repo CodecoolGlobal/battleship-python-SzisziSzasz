@@ -1,6 +1,7 @@
 import string
 import os 
 import time
+import msvcrt as m
 # implementing the Battleship game
 
 
@@ -15,6 +16,26 @@ class bcolors:
 
 def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def wait():
+    m.getch()
+
+def init_grid(grid):
+    valid = False
+    imp = ''
+    while not valid:
+        imp = input("Please give the size of the board you want to play (5-10). ")
+        try:
+            int(imp)
+            if 4 < int(imp) < 11:
+                valid = True
+            else:
+                print("Invalid input! (must be between 5-10)")
+        except ValueError:
+            print("Invalid input! (must be between 5-10)")
+    grid = int(imp)
+    return grid
 
 
 def init_board(grid):
@@ -61,8 +82,18 @@ def init_boats(boats, boats_size, board):
     return coordinates_list, board
 
 
-def boats_deatils():
-    boats = {1:1}
+def boats_deatils(grid):
+    boats = {}
+    if grid == 5 or grid == 6:
+        boats = {1:3, 2:3}
+    elif grid == 7:
+        boats = {1:4, 2:3}
+    elif grid == 8:
+        boats = {1:4, 2:3, 3:1}
+    elif grid == 9:
+        boats = {1:4, 2:3, 3:2}
+    elif grid == 10:
+        boats = {1:4, 2:3, 3:2, 4:1}
     boats_size = list(boats.keys())
     return boats, boats_size
 
@@ -227,8 +258,21 @@ def mark_shoot_on_board(board, hit, coordinates_list):
             coordinates_list.remove(ship)
             for tile in sunk:
                 board[tile[0]][tile[1]] = 'S'
+            return 'S'
+        else:
+            return 'H'
     elif board[hit[0]][hit[1]] == '0':
         board[hit[0]][hit[1]] = 'M'
+        return 'M'
+
+
+def feedback(shot):
+    if shot == 'M':
+        print("You've missed!")
+    elif shot == 'H':
+        print("You've hit a ship!")
+    elif shot == 'S':
+        print("You've sunk a ship!")
 
 
 def is_win(coordinates_list, player):
@@ -238,19 +282,21 @@ def is_win(coordinates_list, player):
 if __name__ == '__main__':
     try:
         clear_terminal()
+        grid = init_grid(grid)
         boats, boats_size = (boats_deatils())
-        print(f"{bcolors.FAIL}Player 2's turn.{bcolors.ENDC}")
+        print(f"{bcolors.FAIL}Player 1's turn.{bcolors.ENDC}")
         board_a = init_board(grid)
         print_one_board(grid, board_a)
         coordinates_list_a, board_a = init_boats(boats, boats_size, board_a)
         # waiting screen 'Next player's placement phase' is displayed til pressing any button
-        time.sleep(3)
+        print("Next player's placement phase.\nPress Enter to continue with Player 2.")
+        wait()
         clear_terminal()
         print(f"{bcolors.FAIL}Player 2's turn.{bcolors.ENDC}")
         board_b = init_board(grid)
         print_one_board(grid, board_b)
         coordinates_list_b, board_b = init_boats(boats, boats_size, board_b)
-        time.sleep(3)
+        input("Press Enter to continue...")
         clear_terminal()
         turns = int(init_turns())
         clear_terminal()
@@ -261,9 +307,11 @@ if __name__ == '__main__':
             print(f"Player 1's turn.")
             print_two_board(grid, board_a, board_b)
             hit = input_shoot()
-            mark_shoot_on_board(board_b, hit, coordinates_list_b)
+            shot = mark_shoot_on_board(board_b, hit, coordinates_list_b)
             print_two_board(grid, board_a, board_b)
+            feedback(shot)
             won, winner = is_win(coordinates_list_b, '1')
+            input("Press Enter to continue...")
             if won:
                 break
             clear_terminal()
@@ -272,13 +320,15 @@ if __name__ == '__main__':
             print(f"Player 2's turn.")
             print_two_board(grid, board_a, board_b)
             hit = input_shoot()
-            mark_shoot_on_board(board_a, hit, coordinates_list_a)
+            shot = mark_shoot_on_board(board_a, hit, coordinates_list_a)
             print_two_board(grid, board_a, board_b)
+            feedback(shot)
             won, winner = is_win(coordinates_list_a, '2')
+            input("Press Enter to continue...")
             clear_terminal()
             turns += -1
         if won:
-            print(f'Player {winner} wins!')
+            print(f'{bcolors.OKGREEN}Player {winner} wins!{bcolors.ENDC}')
         if turns == 0:
             print("No more turns, it's a draw! ")
     except KeyboardInterrupt:
