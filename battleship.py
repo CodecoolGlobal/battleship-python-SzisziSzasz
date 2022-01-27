@@ -3,8 +3,6 @@ import os
 import msvcrt as m
 # implementing the Battleship game
 
-
-grid = 5
 class bcolors:
     MISS = '\u001b[30m'
     WARNING = '\033[93m'
@@ -22,7 +20,7 @@ def wait(message):
     m.getch()
     # os.system('read -s -n 1 -p "Press any key to continue with Player 2."')
 
-def init_grid(grid):
+def init_grid():
     valid = False
     imp = ''
     while not valid:
@@ -61,14 +59,14 @@ def init_turns():
     return turns
 
 
-def init_boats(boats, boats_size, board):
+def init_boats(boats, boats_size, board, grid):
     coordinates_list = []
     for m in range(len(boats)):
         for n in range(boats[m+1]):
             imp = []
             theres_contact = True
             while theres_contact:
-                imp = is_valid_coordinates(boats_size[m])
+                imp = is_valid_coordinates(boats_size[m], grid)
                 theres_contact = is_there_contact(imp, board, grid)
                 if theres_contact:
                     print("Boats can't contact by edge.")
@@ -158,7 +156,7 @@ def print_two_board(grid, board_a, board_b):
 
 
 #cordinate input + validation:
-def is_valid_input_coordinates(imp):
+def is_valid_input_coordinates(imp, grid):
     letters = [string.ascii_letters[i] for i in range(26, 26+grid)]
     valid = False
     if len(imp) == 2:
@@ -176,7 +174,7 @@ def is_valid_input_coordinates(imp):
     return valid
 
 
-def is_valid_coordinates(size):
+def is_valid_coordinates(size, grid):
     imp = []
     valid = False
     while not valid:
@@ -184,7 +182,7 @@ def is_valid_coordinates(size):
         valids = []
         if len(imp) == size:
             for i in range(len(imp)):
-                valids.append(is_valid_input_coordinates(imp[i]))
+                valids.append(is_valid_input_coordinates(imp[i], grid))
         else:
             print(f"You must give {size} coordinates.")
             valids.append(False)
@@ -220,17 +218,17 @@ def is_there_contact(imp, board, grid):
         return False
 
 
-def is_valid_shoot():
+def is_valid_shoot(grid):
     imp = ''
     valid = False
     while not valid:
         imp = input(f'Try to shoot a boat, give me a coordinate (A-{string.ascii_letters[25+grid]})(1-{grid}))')
-        valid = is_valid_input_coordinates(imp)
+        valid = is_valid_input_coordinates(imp, grid)
     return imp
 
 
-def input_shoot():
-    imp = is_valid_shoot()
+def input_shoot(grid):
+    imp = is_valid_shoot(grid)
     hit = (ord(imp[0].lower())-97, int(imp[1])-1)
     return hit
 
@@ -287,7 +285,7 @@ def half_turn(turns, grid, board_a, board_b, hit, coordinates, player, won, winn
     print(f"{bcolors.FAIL}Turns left: {turns}{bcolors.ENDC}")
     print(f"Player {player}'s turn.")
     print_two_board(grid, board_a, board_b)
-    hit = input_shoot()
+    hit = input_shoot(grid)
     shot = mark_shoot_on_board(board_to_mark, hit, coordinates)
     print_two_board(grid, board_a, board_b)
     feedback(shot)
@@ -297,15 +295,15 @@ def half_turn(turns, grid, board_a, board_b, hit, coordinates, player, won, winn
     return won, winner
 
 
-def main(grid):
+def main():
     try:
         clear_terminal()
-        grid = init_grid(grid)
+        grid = init_grid()
         boats, boats_size = (boats_deatils(grid))
         print(f"{bcolors.FAIL}Player 1's turn.{bcolors.ENDC}")
         board_a = init_board(grid)
         print_one_board(grid, board_a)
-        coordinates_list_a, board_a = init_boats(boats, boats_size, board_a)
+        coordinates_list_a, board_a = init_boats(boats, boats_size, board_a, grid)
         # waiting screen 'Next player's placement phase' is displayed til pressing any button
         print("Next player's placement phase.\n")
         wait("Press any key to continue with Player 2.")
@@ -313,7 +311,7 @@ def main(grid):
         print(f"{bcolors.FAIL}Player 2's turn.{bcolors.ENDC}")
         board_b = init_board(grid)
         print_one_board(grid, board_b)
-        coordinates_list_b, board_b = init_boats(boats, boats_size, board_b)
+        coordinates_list_b, board_b = init_boats(boats, boats_size, board_b, grid)
         input("Press Enter to continue...")
         clear_terminal()
         turns = int(init_turns())
@@ -337,4 +335,4 @@ def main(grid):
 
 
 if __name__ == '__main__':
-    main(grid)
+    main()
