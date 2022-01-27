@@ -297,7 +297,7 @@ def half_turn(turns, grid, board_a, board_b, hit, coordinates, player, won, winn
     return won, winner
 
 
-def main():
+def main(grid):
     try:
         clear_terminal()
         grid = init_grid(grid)
