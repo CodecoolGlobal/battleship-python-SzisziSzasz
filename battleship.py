@@ -1,6 +1,8 @@
 import string
 import os 
-import msvcrt as m
+import platform
+if platform.system() == 'Windows':
+    import msvcrt as m
 # implementing the Battleship game
 
 class bcolors:
@@ -16,9 +18,11 @@ def clear_terminal():
 
 
 def wait(message):
-    print(message)
-    m.getch()
-    # os.system('read -s -n 1 -p "Press any key to continue with Player 2."')
+    if platform.system() == 'Windows':
+        print(message)
+        m.getch()
+    else:
+        os.system('read -s -n 1 -p "Press any key to continue with Player 2."')
 
 def init_grid():
     valid = False
